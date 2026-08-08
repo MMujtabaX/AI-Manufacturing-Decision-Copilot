@@ -1,0 +1,74 @@
+[
+  {
+    "supplier_id": "S1",
+    "name": "Mekong Precision Plastics",
+    "location": "Vietnam",
+    "certifications": ["ISO9001", "RoHS", "ISO14001"],
+    "min_order_quantity": 3000,
+    "capacity_units_per_month": 200000,
+    "quality_history_score": 0.88,
+    "lead_time_days": 32,
+    "sustainability_score": 0.71,
+    "notes": "Long-standing partner on ABS enclosures, has handled export-controlled electronics before for other clients."
+  },
+  {
+    "supplier_id": "S2",
+    "name": "Selangor Moldworks",
+    "location": "Malaysia",
+    "certifications": ["ISO9001"],
+    "min_order_quantity": 2000,
+    "capacity_units_per_month": 150000,
+    "quality_history_score": 0.81,
+    "lead_time_days": 40,
+    "sustainability_score": 0.55,
+    "notes": "RoHS compliance pending renewal, expected within 60 days."
+  },
+  {
+    "supplier_id": "S3",
+    "name": "Guadalajara Componentes",
+    "location": "Mexico",
+    "certifications": ["ISO9001", "RoHS"],
+    "min_order_quantity": 4500,
+    "capacity_units_per_month": 90000,
+    "quality_history_score": 0.79,
+    "lead_time_days": 28,
+    "sustainability_score": 0.62,
+    "notes": "Nearshoring option for North American demand, competitive freight."
+  },
+  {
+    "supplier_id": "S4",
+    "name": "Shenzhen Rapid Mold",
+    "location": "China",
+    "certifications": ["ISO9001", "RoHS"],
+    "min_order_quantity": 8000,
+    "capacity_units_per_month": 500000,
+    "quality_history_score": 0.9,
+    "lead_time_days": 25,
+    "sustainability_score": 0.4,
+    "notes": "High capacity, MOQ exceeds our threshold for this order."
+  },
+  {
+    "supplier_id": "S5",
+    "name": "Hanoi Injection Co",
+    "location": "Vietnam",
+    "certifications": ["RoHS"],
+    "min_order_quantity": 1500,
+    "capacity_units_per_month": 60000,
+    "quality_history_score": 0.6,
+    "lead_time_days": 38,
+    "sustainability_score": 0.58,
+    "notes": "New supplier, ISO9001 certification in progress, no export license documentation provided."
+  },
+  {
+    "supplier_id": "S6",
+    "name": "Ho Chi Minh Plastics Group",
+    "location": "Vietnam",
+    "certifications": ["ISO9001", "RoHS"],
+    "min_order_quantity": 5000,
+    "capacity_units_per_month": 220000,
+    "quality_history_score": 0.83,
+    "lead_time_days": 50,
+    "sustainability_score": 0.66,
+    "notes": "Strong quality record but lead time runs long during peak season."
+  }
+]

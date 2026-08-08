@@ -1,0 +1,80 @@
+[
+  {
+    "supplier_id": "S1",
+    "unit_price": 3.05,
+    "currency": "USD",
+    "tooling_cost": 12000,
+    "minimum_order_quantity": 3000,
+    "payment_terms": "30% deposit, 70% before shipment",
+    "production_lead_time_days": 32,
+    "freight_cost_per_unit": 0.18,
+    "duty_rate_pct": 2.5,
+    "incoterm": "FOB",
+    "quote_date": "2026-07-15"
+  },
+  {
+    "supplier_id": "S2",
+    "unit_price": 2.85,
+    "currency": "USD",
+    "tooling_cost": 9500,
+    "minimum_order_quantity": 2000,
+    "payment_terms": "50% deposit, 50% net 30",
+    "production_lead_time_days": 40,
+    "freight_cost_per_unit": 0.21,
+    "duty_rate_pct": 3.0,
+    "incoterm": "FOB",
+    "quote_date": "2026-07-18"
+  },
+  {
+    "supplier_id": "S3",
+    "unit_price": 3.40,
+    "currency": "USD",
+    "tooling_cost": 11000,
+    "minimum_order_quantity": 4500,
+    "payment_terms": "40% deposit, 60% before shipment",
+    "production_lead_time_days": 28,
+    "freight_cost_per_unit": 0.09,
+    "duty_rate_pct": 0.0,
+    "incoterm": "DDP",
+    "quote_date": "2026-07-10"
+  },
+  {
+    "supplier_id": "S4",
+    "unit_price": 2.40,
+    "currency": "USD",
+    "tooling_cost": 15000,
+    "minimum_order_quantity": 8000,
+    "payment_terms": "30% deposit, 70% before shipment",
+    "production_lead_time_days": 25,
+    "freight_cost_per_unit": 0.24,
+    "duty_rate_pct": 4.0,
+    "incoterm": "FOB",
+    "quote_date": "2026-07-12"
+  },
+  {
+    "supplier_id": "S5",
+    "unit_price": 2.70,
+    "currency": "USD",
+    "tooling_cost": 8000,
+    "minimum_order_quantity": 1500,
+    "payment_terms": "100% before shipment",
+    "production_lead_time_days": 38,
+    "freight_cost_per_unit": 0.19,
+    "duty_rate_pct": 2.5,
+    "incoterm": "FOB",
+    "quote_date": "2026-07-20"
+  },
+  {
+    "supplier_id": "S6",
+    "unit_price": 3.15,
+    "currency": "USD",
+    "tooling_cost": 10500,
+    "minimum_order_quantity": 5000,
+    "payment_terms": "30% deposit, 70% before shipment",
+    "production_lead_time_days": 50,
+    "freight_cost_per_unit": 0.17,
+    "duty_rate_pct": 2.5,
+    "incoterm": "FOB",
+    "quote_date": "2026-07-14"
+  }
+]

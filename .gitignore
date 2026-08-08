@@ -1,0 +1,20 @@
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Environment Variables & Keys
+.env
+*.env
+
+# Python Cache & Artifacts
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Streamlit Local Cache
+.streamlit/
+
+# OS Specific
+.DS_Store
+Thumbs.db
