@@ -94,9 +94,9 @@ st.markdown(STYLE, unsafe_allow_html=True)
 
 @st.cache_data
 def load_base():
-    suppliers_raw = json.loads((DATA_DIR / "suppliers.json").read_text())
-    quotations_raw = json.loads((DATA_DIR / "quotations.json").read_text())
-    scenarios = json.loads((DATA_DIR / "scenarios.json").read_text())["scenarios"]
+    suppliers_raw = json.loads((DATA_DIR / "suppliers.json").read_text(encoding="utf-8"))
+    quotations_raw = json.loads((DATA_DIR / "quotations.json").read_text(encoding="utf-8"))
+    scenarios = json.loads((DATA_DIR / "scenarios.json").read_text(encoding="utf-8"))["scenarios"]
     suppliers = {s["supplier_id"]: Supplier(**s) for s in suppliers_raw}
     quotations = {q["supplier_id"]: Quotation(**q) for q in quotations_raw}
     return suppliers, quotations, scenarios
