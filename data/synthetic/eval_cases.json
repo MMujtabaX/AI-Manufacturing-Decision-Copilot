@@ -1,0 +1,70 @@
+{
+  "note": "Held-out-style eval cases with hand-verified expected outcomes. Replace or extend with the organizer's held-out cases once the real case pack is released.",
+  "seeded_absent_fields": ["export_license"],
+  "cases": [
+    {
+      "case_id": "eval_1_basic",
+      "requirements": {
+        "product_name": "Test A",
+        "mandatory_certifications": ["ISO9001", "RoHS"],
+        "min_order_quantity_max": 5000,
+        "max_lead_time_days": 45,
+        "min_quality_history_score": 0.75,
+        "min_sustainability_score": 0.5
+      },
+      "suppliers": [
+        {"supplier_id": "A", "name": "AllPass", "location": "Vietnam",
+         "certifications": ["ISO9001", "RoHS"], "min_order_quantity": 3000,
+         "quality_history_score": 0.9, "lead_time_days": 30, "sustainability_score": 0.7},
+        {"supplier_id": "B", "name": "NoRoHS", "location": "Vietnam",
+         "certifications": ["ISO9001"], "min_order_quantity": 3000,
+         "quality_history_score": 0.9, "lead_time_days": 30, "sustainability_score": 0.7},
+        {"supplier_id": "C", "name": "MOQtooHigh", "location": "Vietnam",
+         "certifications": ["ISO9001", "RoHS"], "min_order_quantity": 9000,
+         "quality_history_score": 0.9, "lead_time_days": 30, "sustainability_score": 0.7}
+      ],
+      "expected_eligible_ids": ["A"]
+    },
+    {
+      "case_id": "eval_2_lead_time_and_quality",
+      "requirements": {
+        "product_name": "Test B",
+        "mandatory_certifications": ["ISO9001"],
+        "min_order_quantity_max": 10000,
+        "max_lead_time_days": 20,
+        "min_quality_history_score": 0.8,
+        "min_sustainability_score": 0.0
+      },
+      "suppliers": [
+        {"supplier_id": "D", "name": "FastGood", "location": "X",
+         "certifications": ["ISO9001"], "min_order_quantity": 100,
+         "quality_history_score": 0.85, "lead_time_days": 15, "sustainability_score": 0.5},
+        {"supplier_id": "E", "name": "SlowGood", "location": "X",
+         "certifications": ["ISO9001"], "min_order_quantity": 100,
+         "quality_history_score": 0.85, "lead_time_days": 40, "sustainability_score": 0.5},
+        {"supplier_id": "F", "name": "FastPoor", "location": "X",
+         "certifications": ["ISO9001"], "min_order_quantity": 100,
+         "quality_history_score": 0.6, "lead_time_days": 15, "sustainability_score": 0.5}
+      ],
+      "expected_eligible_ids": ["D"]
+    },
+    {
+      "case_id": "eval_3_all_fail",
+      "requirements": {
+        "product_name": "Test C",
+        "mandatory_certifications": ["ISO9001", "RoHS", "UL"],
+        "min_order_quantity_max": 5000,
+        "max_lead_time_days": 45
+      },
+      "suppliers": [
+        {"supplier_id": "G", "name": "NoUL1", "location": "X",
+         "certifications": ["ISO9001", "RoHS"], "min_order_quantity": 1000,
+         "quality_history_score": 0.9, "lead_time_days": 20, "sustainability_score": 0.7},
+        {"supplier_id": "H", "name": "NoUL2", "location": "X",
+         "certifications": ["ISO9001", "RoHS"], "min_order_quantity": 1000,
+         "quality_history_score": 0.9, "lead_time_days": 20, "sustainability_score": 0.7}
+      ],
+      "expected_eligible_ids": []
+    }
+  ]
+}

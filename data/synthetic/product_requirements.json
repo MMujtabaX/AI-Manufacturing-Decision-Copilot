@@ -1,0 +1,10 @@
+{
+  "product_name": "Injection-molded enclosure, ABS, IP54",
+  "mandatory_certifications": ["ISO9001", "RoHS"],
+  "min_order_quantity_max": 5000,
+  "max_lead_time_days": 45,
+  "preferred_locations": ["Vietnam", "Malaysia", "Mexico"],
+  "target_unit_price": 3.20,
+  "min_quality_history_score": 0.75,
+  "min_sustainability_score": 0.5
+}

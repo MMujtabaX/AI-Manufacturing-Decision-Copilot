@@ -1,0 +1,46 @@
+{
+  "scenarios": {
+    "1_standard_shortlist": {
+      "label": "Scenario 1 — Standard eligible shortlist (success case)",
+      "description": "Normal sourcing decision. Several suppliers pass; the copilot ranks them and explains why.",
+      "requirements": {
+        "product_name": "Injection-molded enclosure, ABS, IP54",
+        "mandatory_certifications": ["ISO9001", "RoHS"],
+        "min_order_quantity_max": 5000,
+        "max_lead_time_days": 45,
+        "preferred_locations": ["Vietnam", "Malaysia", "Mexico"],
+        "target_unit_price": 3.20,
+        "min_quality_history_score": 0.75,
+        "min_sustainability_score": 0.5
+      }
+    },
+    "2_ambiguous_conflict": {
+      "label": "Scenario 2 — Ambiguous / conflicting lead-time data",
+      "description": "Requirements loosened so a borderline supplier (S3) becomes a contender — but its quotation lead time conflicts with its profile lead time. The copilot flags the conflict instead of silently trusting one number.",
+      "requirements": {
+        "product_name": "Injection-molded enclosure, ABS, IP54",
+        "mandatory_certifications": ["ISO9001"],
+        "min_order_quantity_max": 5000,
+        "max_lead_time_days": 50,
+        "preferred_locations": ["Vietnam", "Malaysia", "Mexico"],
+        "target_unit_price": 3.50,
+        "min_quality_history_score": 0.70,
+        "min_sustainability_score": 0.5
+      }
+    },
+    "3_all_fail_fallback": {
+      "label": "Scenario 3 — Complete constraint failure (fallback case)",
+      "description": "A mandatory certification (UL) that no supplier holds. Every supplier fails the eligibility screen; the copilot returns a safe 'no eligible supplier' state rather than forcing a recommendation.",
+      "requirements": {
+        "product_name": "Injection-molded enclosure, ABS, IP54 (UL-listed)",
+        "mandatory_certifications": ["ISO9001", "RoHS", "UL"],
+        "min_order_quantity_max": 5000,
+        "max_lead_time_days": 45,
+        "preferred_locations": ["Vietnam", "Malaysia", "Mexico"],
+        "target_unit_price": 3.20,
+        "min_quality_history_score": 0.75,
+        "min_sustainability_score": 0.5
+      }
+    }
+  }
+}
