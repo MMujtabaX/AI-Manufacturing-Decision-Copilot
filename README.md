@@ -1,120 +1,114 @@
-# AI Manufacturing Decision Copilot — Supplier Shortlisting (Track 1)
+# SourceWise
 
-Sofstica AI Hackathon 2026 (SGTDP, 1st cohort). Converts product requirements +
-supplier profiles + quotations into a traceable, ranked, evidence-grounded
-shortlist — with a transparent eligibility screen, sensitivity analysis, and
-honest evaluation against a simple baseline.
+An AI copilot for supplier shortlisting. Built for the Sofstica AI Hackathon 2026
+(Manufacturing Decision Copilot theme, Track 1).
 
-## Why this design
+You give it a product requirement, a set of supplier profiles, and their
+quotations. It screens the suppliers against the mandatory constraints, ranks the
+ones that pass, pulls supporting evidence out of the free-text notes, flags places
+where two sources disagree, and leaves the final call to a person. It doesn't
+contact anyone or place orders.
 
-The brief's minimum evidence for Track 1 is: (1) a transparent eligibility
-screen before ranking, (2) source citations for every material supplier
-claim, (3) sensitivity analysis showing how the ranking changes when
-priorities change. Each maps to one module:
+All the data in here is synthetic. The organizers didn't ship a case pack, so we
+generated our own to match the field shapes in the brief. It's here to show the
+method works, not to say anything about real suppliers.
 
-| Requirement | Module |
-|---|---|
-| Transparent eligibility screen | `src/rules.py` — plain Python, no ML, every fail names the exact rule |
-| Source citations / evidence grounding | `src/extract_llm.py` — LLM only extracts facts it can quote, abstains otherwise |
-| Sensitivity analysis | `src/rank.py` — named weight profiles (`cost_focused`, `speed_focused`, `quality_focused`, `balanced`) |
-| Ambiguous / conflicting case | `src/conflicts.py` — flags when profile and quotation disagree (e.g. lead time) instead of silently picking one |
-| Standalone benchmark | `src/eval.py` — CLI harness, metrics **computed** from the pipeline, never hardcoded |
-| Checksummed manifest | `src/manifest.py` — writes `data/manifest.json` with SHA-256 of every data file |
-| In-UI baseline + metrics | `src/evaluate.py` — lowest-price baseline, constraint satisfaction, citation coverage, hallucination rate, rank agreement |
+## The idea
 
-## The three required demo cases
+Most of a shortlisting decision is just rules: does the supplier hold the required
+certifications, is their minimum order quantity under our cap, is the lead time
+acceptable. That part runs in plain Python. It's deterministic, easy to check, and
+can't make things up.
 
-`data/synthetic/scenarios.json` defines the three cases the brief requires,
-switchable from the app's sidebar dropdown:
+The one thing rules handle badly is the free-text note attached to each supplier,
+things like "RoHS lapsed, renewal filed" or "quoted lead time assumes no tooling
+changes." That's the only place the LLM is used. It extracts cited facts and
+abstains when the text doesn't actually support an answer. So the AI is doing
+something the rest of the code can't, rather than being added for the sake of it,
+and if the API is unavailable the shortlist still runs on the fallback.
 
-1. **Standard shortlist (success)** — several suppliers pass; copilot ranks and explains.
-2. **Ambiguous / conflicting** — a borderline supplier (S3) whose quotation lead
-   time (45d) conflicts with its profile lead time (28d); the copilot flags it.
-3. **Complete failure (fallback)** — a mandatory cert (UL) no supplier holds; the
-   copilot returns a safe "no eligible supplier" state instead of forcing a pick.
+## Running it
 
-## Running the benchmark
-
-```bash
-python -m src.eval        # over held-out-style eval cases with verified answers
-python -m src.manifest    # (re)write data/manifest.json with SHA-256 checksums
 ```
-
-`src/eval.py` metrics are all measured, not hardcoded. Hallucination rate is
-measured against a seeded field (`export_license`) known to be absent from every
-note — a correct system abstains 100% of the time. When the organizer's held-out
-cases are released, run `python -m src.eval --cases <their_file.json>` for the
-official numbers.
-
-AI is used **only** where it's actually needed: normalizing messy free-text
-supplier notes into structured, citable facts. The eligibility screen and
-ranker are deterministic on purpose — that's what the judging rubric calls
-"AI necessary rather than decorative," and it also means the core logic
-still works even if the LLM API is down mid-demo.
-
-## Setup
-
-```bash
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+python -m venv venv
+venv\Scripts\activate            # Windows PowerShell
 pip install -r requirements.txt
-cp .env.example .env   # add your free Groq key from console.groq.com/keys (optional)
-python -m pytest tests/ -q                            # should show 7 passed
 streamlit run app/streamlit_app.py
 ```
 
-The app runs fully **without** an API key (deterministic fallback mode for
-fact extraction) — get it working end-to-end first, add the LLM key second.
+It runs without an API key. The note extraction falls back to a keyword matcher so
+the app never breaks offline. To use the real model, copy `.env.example` to `.env`
+and add a free Groq key from https://console.groq.com/keys:
 
-## Swapping in the real case pack
+```
+GROQ_API_KEY=gsk_...
+```
 
-Right now `data/synthetic/*.json` are hand-authored placeholders matching
-the field shapes described in the brief. When the organizer's Manufacturing
-Challenge Pack is released:
+Default model is `openai/gpt-oss-20b`. Groq deprecated `llama-3.1-8b-instant` in
+June 2026, so don't use that one. You can point at a different model with
+`GROQ_MODEL` in the .env.
 
-1. Update `data/manifest.md` with the real source URL, version, and SHA-256.
-2. Write an `src/ingest.py` that maps the pack's actual format (CSV/JSON/PDF)
-   into the same `ProductRequirement` / `Supplier` / `Quotation` schemas in
-   `src/schema.py` — nothing downstream (rules, ranking, evaluation, UI)
-   should need to change.
-3. Re-run `pytest` and the Streamlit app against the real data.
+## Tests and evaluation
 
-## Evaluation
+```
+python -m pytest tests/ -q       # 9 tests
+python -m src.eval               # prints the benchmark
+python -m src.manifest           # regenerates SHA-256 checksums for the data files
+```
 
-Run the app and check the "Evaluation" panel, or call `src/evaluate.py`
-directly. Reported metrics (per the brief):
-- **Mandatory-constraint satisfaction rate** — fraction of suppliers correctly screened
-- **Evidence citation coverage** — fraction of extracted facts with a real source snippet
-- **Hallucination rate** — measured against a seeded absent field (`export_license`); a
-  correct system abstains 100% of the time
-- **Ranking agreement vs. baseline** (lowest-price-only) — Spearman correlation
+`src/eval.py` runs the eligibility logic over a small set of hand-checked cases and
+reports constraint accuracy, citation coverage, and a hallucination rate. The
+hallucination rate is measured against a field that's deliberately absent from
+every note, so a correct system abstains on it every time. On the current synthetic
+set that works out to 100% constraint accuracy, 100% citation coverage, and 0%
+hallucination. Those numbers are computed by the script, not written in by hand.
 
-For the actual submission, also run `src/evaluate.py::robustness_test` with a
-few fields dropped per supplier and report how the system fails safe, and add
-one **ambiguous/conflicting case** and one **failure case** to the demo, as
-required by "Required deliverables."
+## Project layout
 
-## Safety & scope (per brief)
+```
+src/
+  schema.py        pydantic models the rest of the code builds on
+  rules.py         eligibility screen, deterministic
+  rank.py          weighted ranking with four priority profiles
+  conflicts.py     flags profile-vs-quotation disagreements
+  extract_llm.py   Groq extraction with a no-API fallback
+  evaluate.py      metric helpers used inside the app
+  eval.py          standalone benchmark
+  manifest.py      checksum manifest generator
+app/streamlit_app.py
+data/synthetic/    requirements, suppliers, quotations, scenarios, eval cases
+docs/              method card, evaluation report, safety statement, pitch
+tests/
+```
 
-- Decision support only — no supplier contact, RFQs, approvals, or orders.
-- Every consequential recommendation shows source, date, confidence, and conflicts.
-- Inferred values are never presented as verified facts.
-- No confidential case-pack material is sent to external services beyond the
-  declared LLM API call.
+## The three demo scenarios
 
-## Suggested task split (2 teammates + you)
+The sidebar switches between three cases so the demo covers the easy path and the
+awkward ones:
 
-- **You:** rules/ranking/evaluation logic, LLM extraction, ingest.py for the real pack
-- **Teammate A:** Streamlit polish (charts for sensitivity analysis, better
-  layout, the three required demo cases: success / ambiguous / failure)
-- **Teammate B:** README/technical summary, data manifest, safety statement,
-  pitch deck, demo video/recording, Sofstica portal submission (1000-char
-  description, GitHub repo hygiene, CVs)
+1. Standard. Several suppliers pass and get ranked. Change the priority profile and
+   the top pick shifts, which is the sensitivity analysis.
+2. Conflict. One supplier's profile says a 28-day lead time while its quote says 45.
+   The app flags the disagreement instead of quietly picking one.
+3. No eligible supplier. A certification nobody holds. It returns an empty shortlist
+   and explains why, rather than forcing a recommendation.
 
-## Roadmap for the 48 hours
+## Data and safety
 
-1. **Now:** get this skeleton running locally on synthetic data (done above).
-2. **Hours 0–6 (once pack drops):** write `ingest.py`, swap synthetic data for real pack, re-run tests.
-3. **Hours 6–16:** tune eligibility rules to the real requirement fields; wire up LLM extraction on real free-text fields; add 1–2 more weight profiles if the real data supports them.
-4. **Hours 16–30:** build the evaluation report properly — real baseline comparison, robustness tests, the 3 required demo cases (success/ambiguous/failure).
-5. **Hours 30–40:** UI polish, safety statement, technical summary/README finalize, record demo video.
-6. **Hours 40–48:** buffer, rehearse pitch, submit early (portal auto-closes, no late submissions).
+The data is synthetic and labelled as such in the app and the manifest. The only
+thing that ever leaves the machine is the Groq request for note extraction, and only
+if you've set a key. Extracted facts are always shown with their source snippet and a
+confidence score, never presented as verified truth. The key lives in `.env`, which
+is gitignored. Full details in `docs/SAFETY_AND_DATA_STATEMENT.md`.
+
+## Known limitations
+
+It's a small synthetic sample, so the metrics show that the pipeline behaves
+correctly, not that it predicts real supplier performance. The ranking is a
+transparent weighted score rather than a trained model, which is why the sensitivity
+view sits right next to it. If a real case pack shows up later, the plan is a single
+ingest module that maps it into the schemas in `src/schema.py`; nothing downstream
+would have to change.
+
+More detail is in `docs/`: the method card, evaluation report, intended use and
+limitations, and the pitch outline.
