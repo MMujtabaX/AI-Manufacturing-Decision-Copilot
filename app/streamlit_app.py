@@ -158,7 +158,19 @@ with tab_decision:
         "Result": "PASS" if r.eligible else "FAIL",
         "Reasons": "; ".join(r.reasons),
     } for r in elig_results])
-    st.dataframe(elig_df, use_container_width=True, hide_index=True)
+
+    def _color_result(val):
+        if val == "PASS":
+            return "color:#1E6B4F; font-weight:600;"   # green
+        if val == "FAIL":
+            return "color:#8C2F27; font-weight:600;"   # red
+        return ""
+
+    try:  # pandas >= 2.1
+        styled = elig_df.style.map(_color_result, subset=["Result"])
+    except AttributeError:  # pandas < 2.1
+        styled = elig_df.style.applymap(_color_result, subset=["Result"])
+    st.dataframe(styled, use_container_width=True, hide_index=True)
 
     eligible_ids = [r.supplier_id for r in elig_results if r.eligible]
 
